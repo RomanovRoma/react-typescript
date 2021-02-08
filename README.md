@@ -1,2 +1,1 @@
-# Типизация классовых компонент
-# Typing of class components
+# Typing of Сlass Сomponents
