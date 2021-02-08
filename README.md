@@ -1,1 +1,1 @@
-# Typing of Сlass Сomponents
+# Typing of Events
