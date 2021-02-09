@@ -1,43 +1,40 @@
-import React, { Component } from 'react'
-import { RouteComponentProps } from 'react-router'
+import React, { Component } from "react";
+import { RouteComponentProps } from "react-router";
 
 type RouteParams = {
-  id: string
-}
+  id: string;
+};
 
 interface IPost {
-  title?: string,
-  body?: string
+  title?: string;
+  body?: string;
 }
 
 type PostState = {
-  post: IPost
-}
-
-export async function http<T>(reques: string): Promise<T> {
-  const response = await fetch(reques)
-  const body = await response.json()
-  return body
-}
+  post: IPost;
+};
 
 class Post extends Component<RouteComponentProps<RouteParams>, PostState> {
   state = {
     post: {
-      title: '',
-      body: ''
-    }
-  }
+      title: "",
+      body: "",
+    },
+  };
 
-  async componentDidMount() {
-    const id = this.props.match.params.id || ''
+  componentDidMount() {
+    const id = this.props.match.params.id || "";
 
-    const post = await http<IPost>(`https://jsonplaceholder.typicode.com/posts/${id}`)
-    {this.setState({post})
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`)
+      .then((res) => res.json())
+      .then((post) => {
+        this.setState({ post });
+      });
   }
 
   render() {
-    const { post } = this.state
-    const { title, body } = post
+    const { post } = this.state;
+    const { title, body } = post;
 
     return (
       <section>
@@ -47,8 +44,8 @@ class Post extends Component<RouteComponentProps<RouteParams>, PostState> {
           <p>{body}</p>
         </article>
       </section>
-    )
+    );
   }
 }
 
-export default Post
+export default Post;
