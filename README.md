@@ -1,1 +1,1 @@
-# Typing of HOCs
+# Typing of React Router
