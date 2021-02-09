@@ -1,110 +1,85 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
+import React, { Component, useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
-// type PortalProps = {
-//   children: React.ReactNode;
-// };
-// class Portal extends Component<PortalProps> {
+// useState
 
-//   private el: HTMLDivElement = document.createElement('div')
+// Inferred as number
+const [value, setValue] = useState(0)
 
-//   public componentDidMount():void {
-//     document.body.appendChild(this.el)
-//   }
+// Explicitly setting the types
+const [value, setValue] = useState<number | undefined>(undefined)
+const [value, setValue] = useState<Array<number>>([])
 
-//   public componentWillUnmount():void {
-//     document.body.removeChild(this.el)
-//   }
+interface IUser {
+  name: string,
+  age?: number
+}
 
-//   public render(): React.ReactElement<PortalProps> {
-//     return ReactDOM.createPortal(this.props.children, this.el)
-//   }
-// }
+const [value, setValue] = useState<IUser>({ name: 'Roman'})
 
-// class MyComponent extends Component<{}, { count: number }> {
-//   state = {
-//     count: 0,
-//   };
 
-//   handleClick = () => {
-//     this.setState(({ count }) => ({
-//       count: ++count,
-//     }));
-//   };
+// useRef
 
-//   render() {
-//     return (
-//       <div onClick={this.handleClick}>
-//         <h1>Clicks: {this.state.count}</h1>
-//         <Portal>
-//           <h2>TEST PORTAL</h2>
-//           <button>Click</button>
-//         </Portal>
-//       </div>
-//     );
-//   }
-// }
+const ref1 = useRef<HTMLElement>(null!)
+const ref2 = useRef<HTMLElement | null>(null)
 
-interface IContext {
-  isAuth: Boolean,
-  toggleAuth: () => void
+
+// useContest
+
+interface ITheme {
+  backgroundColor: string,
+  color: string
 }
 
 // Context creation
-const AuthContext = React.createContext<IContext>({
-  isAuth: false,
-  toggleAuth: () => {},
-});
+const ThemeContext = createContext<ITheme>({
+  backgroundColor: 'black',
+  color: 'white'
+})
 
-// Inner component (new syntax of static property)
-class Login extends Component {
+// Accessing context in a child component
+const themeContext = useContext<ITHeme>(ThemeContext)
 
-  static contextType = AuthContext;
-  context!: React.ContextType<typeof AuthContext>;
 
-  render() {
-    const { toggleAuth, isAuth } = this.context;
+// useReducer
 
-    return <button onClick={toggleAuth}>{!isAuth ? "Login" : "Logout"}</button>;
+interface State { count: number }
+
+type Action = { type: 'increment' | 'decrement' }
+
+const counterReducer = ({ count }: useState, { type }: Action) => {
+  switch (type) {
+    case 'increment': return { count: count + 1}
+    case 'decrement': return { count: count - 1}
+    default: return {}
   }
 }
 
-// Inner component (old variant with Consumer)
-const Profile: React.FC = (): React.ReactElement => (
-  <AuthContext.Consumer>
-    {({ isAuth }: IContext) => (
-      <h1>{!isAuth ? "Please log in" : "You are logged in"}</h1>
-    )}
-  </AuthContext.Consumer>
-);
+const [state, dispatch] = useReducer(counterReducer, { count: 0})
 
-// Root component
-class Context extends Component<{}, { isAuth: Boolean }> {
-  readonly state = {
-    isAuth: false,
-  };
+dispatch({ type: 'increment' })
+dispatch({ type: 'decrement' })
 
-  toggleAuth = () => {
-    this.setState(({ isAuth }) => ({
-      isAuth: !isAuth,
-    }));
-  };
 
-  render() {
-    const { isAuth } = this.state;
-    const context: IContext = { isAuth, toggleAuth: this.toggleAuth };
+// useCallback & useMemo
 
-    return (
-      <AuthContext.Provider value={context}>
-        <Login />
-        <Profile />
-      </AuthContext.Provider>
-    );
+// Callback
+// Inferred as number
+const memoizedCallback = useCallback(() => { sum(a, b) }, [a, b])
+
+// Memo
+// Inferred as (value1: number, value2: number) => number
+const memoizedValue = useMemo((a: number, b: number) => sum(a, b), [a, b])
+
+
+// useEffect & useLayoutEffect
+
+useEffect(() => {
+  const subscriber = subcribe(options)
+  return () => {
+    unsubscribe(subscriber)
   }
-}
+}, [options])
 
-
-
-const App:React.FC = () => <Context />
+const App:React.FC = () => null
 
 export default App;
