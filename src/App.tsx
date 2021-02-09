@@ -1,88 +1,39 @@
-import React, { Component, useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, { useState } from "react";
 
-/*
-// useState
+type BaseProps = {
+  primTitle: string;
+  secTitle?: string;
+};
 
-// Inferred as number
-const [value, setValue] = useState(0)
+type InjectedProps = {
+  toggleStatus: Boolean;
+  toggle: () => void;
+};
 
-// Explicitly setting the types
-const [value, setValue] = useState<number | undefined>(undefined)
-const [value, setValue] = useState<Array<number>>([])
+const Button = ({ primTitle, secTitle, toggle, toggleStatus }: any) => (
+  <button onClick={toggle}>{toggleStatus ? primTitle : secTitle}</button>
+);
 
-interface IUser {
-  name: string,
-  age?: number
-}
+const withToggle = <BaseProps extends InjectedProps>(
+  PassedComponent: React.ComponentType<BaseProps>
+) => {
+  return (props: BaseProps) => {
+    const [toggleStatus, toggle] = useState(false);
 
-const [value, setValue] = useState<IUser>({ name: 'Roman'})
+    return (
+      <PassedComponent
+        {...(props as BaseProps)}
+        toggle={() => toggle(!toggleStatus)}
+        toggleStatus={toggleStatus}
+      />
+    );
+  };
+};
 
+const ToogleButton = withToggle(Button);
 
-// useRef
-
-const ref1 = useRef<HTMLElement>(null!)
-const ref2 = useRef<HTMLElement | null>(null)
-
-
-// useContest
-
-interface ITheme {
-  backgroundColor: string,
-  color: string
-}
-
-// Context creation
-const ThemeContext = createContext<ITheme>({
-  backgroundColor: 'black',
-  color: 'white'
-})
-
-// Accessing context in a child component
-const themeContext = useContext<ITHeme>(ThemeContext)
-
-
-// useReducer
-
-interface State { count: number }
-
-type Action = { type: 'increment' | 'decrement' }
-
-const counterReducer = ({ count }: useState, { type }: Action) => {
-  switch (type) {
-    case 'increment': return { count: count + 1}
-    case 'decrement': return { count: count - 1}
-    default: return {}
-  }
-}
-
-const [state, dispatch] = useReducer(counterReducer, { count: 0})
-
-dispatch({ type: 'increment' })
-dispatch({ type: 'decrement' })
-
-
-// useCallback & useMemo
-
-// Callback
-// Inferred as number
-const memoizedCallback = useCallback(() => { sum(a, b) }, [a, b])
-
-// Memo
-// Inferred as (value1: number, value2: number) => number
-const memoizedValue = useMemo((a: number, b: number) => sum(a, b), [a, b])
-
-
-// useEffect & useLayoutEffect
-
-useEffect(() => {
-  const subscriber = subcribe(options)
-  return () => {
-    unsubscribe(subscriber)
-  }
-}, [options])
-
-
-
-const App:React.FC = () => null
+const App: React.FC = () => (
+  <ToogleButton primTitle="Maint Title" secTitle="Additional Title" />
+);
 
 export default App;
