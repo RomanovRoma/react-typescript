@@ -1,5 +1,6 @@
 import React, { Component, useCallback, useEffect, useReducer, useRef, useState } from 'react';
 
+/*
 // useState
 
 // Inferred as number
@@ -79,6 +80,8 @@ useEffect(() => {
     unsubscribe(subscriber)
   }
 }, [options])
+
+
 
 const App:React.FC = () => null
 
